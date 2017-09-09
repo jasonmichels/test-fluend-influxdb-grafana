@@ -1,0 +1,31 @@
+version: "3"
+services:
+  logging:
+    image: jasonmichels/logging:develop
+    logging:
+      driver: "fluentd"
+    depends_on:
+      - fluentd
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=testing
+  influxdb:
+    image: influxdb
+    ports:
+      - "8083:8083"
+      - "8086:8086"
+    environment:
+      - INFLUXDB_CONFIG_PATH=/etc/influxdb/influxdb.conf
+    volumes:
+      - /Users/michelsja/Sites/data/influxdb:/var/lib/influxdb
+      - /Users/michelsja/Sites/data/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf:ro
+  fluentd:
+    build: ./fluentd
+    ports:
+      - 24224:24224
+      - 24224:24224/udp
+    depends_on:
+      - influxdb
