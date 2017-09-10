@@ -7,6 +7,8 @@ RUN apk add --update --virtual .build-deps \
  # cutomize following instruction as you wish
  && sudo gem install \
         fluent-plugin-secure-forward \
+        fluent-plugin-elasticsearch \
+        fluent-plugin-record-reformer \
         fluent-plugin-influxdb \
 
  && sudo gem sources --clear-all \

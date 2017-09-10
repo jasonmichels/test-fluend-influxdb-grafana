@@ -6,6 +6,12 @@ services:
       driver: "fluentd"
     depends_on:
       - fluentd
+  secondlogging:
+    image: jasonmichels/secondlogging:develop
+    logging:
+      driver: "fluentd"
+    depends_on:
+      - fluentd
   grafana:
     image: grafana/grafana
     ports:
@@ -29,3 +35,14 @@ services:
       - 24224:24224/udp
     depends_on:
       - influxdb
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.5.2
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+  kibana:
+    image: docker.elastic.co/kibana/kibana:5.5.2
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
