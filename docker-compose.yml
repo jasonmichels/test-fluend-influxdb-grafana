@@ -26,8 +26,20 @@ services:
     environment:
       - INFLUXDB_CONFIG_PATH=/etc/influxdb/influxdb.conf
     volumes:
-      - /Users/michelsja/Sites/data/influxdb:/var/lib/influxdb
-      - /Users/michelsja/Sites/data/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf:ro
+      - ./influxdb:/var/lib/influxdb
+      - ./influxdb/influxdb.conf:/etc/influxdb/influxdb.conf:ro
+  telegraf:
+    image: telegraf
+    environment:
+      - HOST_PROC=/rootfs/proc
+      - HOST_SYS=/rootfs/sys
+      - HOST_ETC=/rootfs/etc
+    volumes:
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys:/rootfs/sys:ro
+      - /proc:/rootfs/proc:ro
+      - /etc:/rootfs/etc:ro
   fluentd:
     build: ./fluentd
     ports:
@@ -47,9 +59,9 @@ services:
     depends_on:
       - elasticsearch
   zookeeper:
-      image: wurstmeister/zookeeper
-      ports:
-        - "2181:2181"
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
   kafka:
     image: wurstmeister/kafka
     ports:
